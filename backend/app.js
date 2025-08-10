@@ -29,7 +29,13 @@ app.use(compression());
 
 // CORS configuration
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173',
+  origin: [
+    process.env.FRONTEND_URL || 'http://localhost:5173',
+    'https://ecosort-ochre.vercel.app',
+    'https://ecosort-82e4-n45j1carh-pankaj-baids-projects.vercel.app',
+    /^https:\/\/ecosort-.*\.vercel\.app$/,
+    /^https:\/\/.*-pankaj-baids-projects\.vercel\.app$/
+  ],
   credentials: true
 }));
 
