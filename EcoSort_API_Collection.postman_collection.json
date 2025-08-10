@@ -1,0 +1,477 @@
+{
+  "info": {
+    "name": "EcoSort API Collection",
+    "description": "Complete API collection for EcoSort Smart Waste Management System",
+    "version": "1.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{auth_token}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:5001",
+      "type": "string"
+    },
+    {
+      "key": "api_url",
+      "value": "{{base_url}}/api",
+      "type": "string"
+    },
+    {
+      "key": "auth_token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/health",
+          "host": ["{{base_url}}"],
+          "path": ["health"]
+        },
+        "description": "Check if the backend server is running"
+      },
+      "response": []
+    },
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    if (response.success && response.data.token) {",
+                  "        pm.collectionVariables.set('auth_token', response.data.token);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Test User\",\n    \"email\": \"test@example.com\",\n    \"password\": \"test123\"\n}"
+            },
+            "url": {
+              "raw": "{{api_url}}/auth/register",
+              "host": ["{{api_url}}"],
+              "path": ["auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Login User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    if (response.success && response.data.token) {",
+                  "        pm.collectionVariables.set('auth_token', response.data.token);",
+                  "    }",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"email\": \"demo@ecosort.com\",\n    \"password\": \"demo123\"\n}"
+            },
+            "url": {
+              "raw": "{{api_url}}/auth/login",
+              "host": ["{{api_url}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Verify Token",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"token\": \"{{auth_token}}\"\n}"
+            },
+            "url": {
+              "raw": "{{api_url}}/auth/verify-token",
+              "host": ["{{api_url}}"],
+              "path": ["auth", "verify-token"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Get Current User",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{api_url}}/users/me",
+              "host": ["{{api_url}}"],
+              "path": ["users", "me"]
+            }
+          }
+        },
+        {
+          "name": "Update Profile",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"name\": \"Updated User Name\"\n}"
+            },
+            "url": {
+              "raw": "{{api_url}}/users/me",
+              "host": ["{{api_url}}"],
+              "path": ["users", "me"]
+            }
+          }
+        },
+        {
+          "name": "Get User Stats",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{api_url}}/users/me/stats",
+              "host": ["{{api_url}}"],
+              "path": ["users", "me", "stats"]
+            }
+          }
+        },
+        {
+          "name": "Get Leaderboard",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{api_url}}/users/leaderboard?limit=10",
+              "host": ["{{api_url}}"],
+              "path": ["users", "leaderboard"],
+              "query": [
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Waste Items",
+      "item": [
+        {
+          "name": "Get All Waste Items",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{api_url}}/waste-items?page=1&limit=20",
+              "host": ["{{api_url}}"],
+              "path": ["waste-items"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "20"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Search Waste Items",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{api_url}}/waste-items?search=plastic",
+              "host": ["{{api_url}}"],
+              "path": ["waste-items"],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "plastic"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Filter by Category",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{api_url}}/waste-items?category=RECYCLABLE",
+              "host": ["{{api_url}}"],
+              "path": ["waste-items"],
+              "query": [
+                {
+                  "key": "category",
+                  "value": "RECYCLABLE"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Waste Item by ID",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{api_url}}/waste-items/[ITEM_ID]",
+              "host": ["{{api_url}}"],
+              "path": ["waste-items", "[ITEM_ID]"]
+            },
+            "description": "Replace [ITEM_ID] with actual waste item ID"
+          }
+        },
+        {
+          "name": "Get Category Stats",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{api_url}}/waste-items/stats/categories",
+              "host": ["{{api_url}}"],
+              "path": ["waste-items", "stats", "categories"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Waste Logs",
+      "item": [
+        {
+          "name": "Log Waste Disposal",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n    \"wasteItemId\": \"[WASTE_ITEM_ID]\",\n    \"quantity\": 1\n}",
+              "description": "Replace [WASTE_ITEM_ID] with actual waste item ID"
+            },
+            "url": {
+              "raw": "{{api_url}}/waste-logs",
+              "host": ["{{api_url}}"],
+              "path": ["waste-logs"]
+            }
+          }
+        },
+        {
+          "name": "Get My Waste Logs",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{api_url}}/waste-logs?page=1&limit=10",
+              "host": ["{{api_url}}"],
+              "path": ["waste-logs"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "limit",
+                  "value": "10"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Waste Log Stats",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{auth_token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "url": {
+              "raw": "{{api_url}}/waste-logs/stats/overview?days=30",
+              "host": ["{{api_url}}"],
+              "path": ["waste-logs", "stats", "overview"],
+              "query": [
+                {
+                  "key": "days",
+                  "value": "30"
+                }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Bins",
+      "item": [
+        {
+          "name": "Get All Bins",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{api_url}}/bins",
+              "host": ["{{api_url}}"],
+              "path": ["bins"]
+            }
+          }
+        },
+        {
+          "name": "Get Bins by Type",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{api_url}}/bins/type/WET",
+              "host": ["{{api_url}}"],
+              "path": ["bins", "type", "WET"]
+            }
+          }
+        },
+        {
+          "name": "Get Nearby Bins",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{api_url}}/bins/nearby/12.9716/77.5946?radius=5",
+              "host": ["{{api_url}}"],
+              "path": ["bins", "nearby", "12.9716", "77.5946"],
+              "query": [
+                {
+                  "key": "radius",
+                  "value": "5"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "name": "Get Bin Stats",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{api_url}}/bins/stats/overview",
+              "host": ["{{api_url}}"],
+              "path": ["bins", "stats", "overview"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
