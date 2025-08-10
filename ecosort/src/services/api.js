@@ -192,7 +192,7 @@ export const wasteLogAPI = {
 export const healthAPI = {
   check: async () => {
     const response = await axios.get(
-      `${import.meta.env.VITE_API_URL || 'http://localhost:5001'}/health`,
+      `${import.meta.env.VITE_API_URL?.replace('/api', '') || 'http://localhost:5001'}/health`,
       { timeout: 5000 }
     );
     return response.data;
