@@ -12,6 +12,9 @@ pnpm-debug.log*
 .env.test.local
 .env.production.local
 
+# But keep frontend environment files
+!frontend/ecosort/.env
+
 # Build outputs
 dist/
 build/
